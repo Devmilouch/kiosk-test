@@ -1,7 +1,9 @@
 import { useAppNavigationStore } from "./stores/appNavigation.store";
 import { DsnFileUpload } from "./components/DsnFileUpload/DsnFileUpload";
+import { ToastContainer } from "react-toastify";
 import logoKiosk from "./assets/kiosk_logo.jpeg";
 import styles from "./styles/App.module.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { currentScreen } = useAppNavigationStore();
@@ -35,6 +37,20 @@ function App() {
         </div>
       </header>
       <main className={styles.contentArea}>{renderCurrentScreen()}</main>
+      
+      {/* Toast notifications container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

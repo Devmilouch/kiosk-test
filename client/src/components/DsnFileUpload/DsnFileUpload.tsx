@@ -2,6 +2,7 @@ import { useDropzone } from "react-dropzone";
 import type { FileRejection } from "react-dropzone";
 import { z } from "zod";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useDsnUploadStore } from "../../stores/dsnUpload.store";
 import { useAppNavigationStore } from "../../stores/appNavigation.store";
 import styles from "./DsnFileUpload.module.scss";
@@ -94,6 +95,9 @@ export const DsnFileUpload = () => {
 
       console.log("Upload successful:", response.data);
 
+      // Show success toast
+      toast.success("Fichier DSN téléchargé et analysé avec succès !");
+
       // Store the result in the store for next screens
       setUploadedFile({
         name: response.data.filename,
@@ -105,12 +109,18 @@ export const DsnFileUpload = () => {
     } catch (error) {
       console.error("Upload failed:", error);
 
+      let errorMessage = "Erreur lors du téléchargement";
+
       if (axios.isAxiosError(error) && error.response) {
         const serverError = error.response.data;
-        setError(serverError.details || serverError.error || "Erreur lors du téléchargement");
+        errorMessage = serverError.details || serverError.error || errorMessage;
       } else {
-        setError("Erreur de connexion au serveur");
+        errorMessage = "Erreur de connexion au serveur";
       }
+
+      // Show error toast
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setUploading(false);
     }
