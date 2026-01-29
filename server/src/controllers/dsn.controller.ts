@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { DsnParserService } from "../services/dsnParser.service";
 
 export const dsnController = {
   async parseDsnFile(req: Request, res: Response, next: NextFunction) {
@@ -9,18 +10,31 @@ export const dsnController = {
       // Extract file content
       const fileContent = file.buffer.toString("utf-8");
 
-      // File information for response
-      const fileInfo = {
-        message: "DSN file uploaded successfully",
-        filename: file.originalname,
-        size: file.size,
-        content: fileContent,
-      };
-
       console.log(`DSN file received: ${file.originalname} (${file.size} bytes)`);
 
-      return res.status(200).json(fileInfo);
+      // Parse DSN content into structured data
+      const parsedData = DsnParserService.parseDsnContent(fileContent, file.originalname);
+
+      // Extract summary for easier consumption
+      const summary = DsnParserService.extractSummaryStats(parsedData);
+
+      // Response with both structured data and summary
+      const response = {
+        message: "DSN file uploaded and parsed successfully",
+        filename: file.originalname,
+        size: file.size,
+        content: fileContent, // Keep raw content for debugging
+        parsedData,
+        summary,
+      };
+
+      console.log(
+        `DSN parsing completed: ${summary.totalEmployees} employees across ${summary.totalEstablishments} establishments`
+      );
+
+      return res.status(200).json(response);
     } catch (error) {
+      console.error("Error parsing DSN file:", error);
       return next(error);
     }
   },
