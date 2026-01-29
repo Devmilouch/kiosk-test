@@ -1,51 +1,42 @@
-import { DsnParser } from "../core/parsers/dsn.parser";
-import { mapDsnToQuestions, type MappedAnswers } from "../core/mappers/dsnToQuestions.mapper";
-import type { ParsedDsnData } from "../core/parsers/dsn.parser";
+import { DSNFileReader, DSNDataReader, type DSNData } from "../core/parsers/dsn.parser";
 
 export interface ProcessedDsnFile {
   message: string;
   filename: string;
   size: number;
-  content: string;
-  parsedData: ParsedDsnData;
-  summary: ReturnType<typeof DsnParser.extractSummaryStats>;
-  mappedAnswers: MappedAnswers;
+  declaration: any; // Toutes les données structurées du DSN
+  dsnData: DSNData; // Données brutes parsées
 }
 
 /**
  * Process uploaded DSN file from buffer to structured response
  * @param file - Multer file object with buffer
- * @returns Processed DSN data with parsing results, summary, and mapped answers
+ * @returns All structured DSN data for frontend processing
  * @throws Error if parsing fails
  */
-export function processDsnFile(file: Express.Multer.File): ProcessedDsnFile {
+export async function processDsnFile(file: Express.Multer.File): Promise<ProcessedDsnFile> {
   // Extract file content from buffer
   const fileContent = file.buffer.toString("utf-8");
 
   console.log(`📁 Processing DSN file: ${file.originalname} (${file.size} bytes)`);
 
-  // Parse DSN content into structured data
-  const parsedData = DsnParser.parseDsnContent(fileContent, file.originalname);
+  try {
+    // Parse DSN content using GitHub parser
+    const dsnData: DSNData = await DSNFileReader(fileContent);
+    const declaration = await DSNDataReader(dsnData);
 
-  // Extract summary statistics for easier consumption
-  const summary = DsnParser.extractSummaryStats(parsedData);
+    console.log(`✅ DSN parsing completed: ${dsnData.rows.length} rows parsed`);
 
-  // Map DSN data to question answers
-  const mappedAnswers = mapDsnToQuestions(parsedData);
-
-  // Log processing completion
-  console.log(
-    `✅ DSN processing completed: ${summary.totalEmployees} employees across ${summary.totalEstablishments} establishments, ${Object.keys(mappedAnswers).length} questions mapped`
-  );
-
-  // Build structured response
-  return {
-    message: "DSN file uploaded, parsed, and mapped successfully",
-    filename: file.originalname,
-    size: file.size,
-    content: fileContent, // Keep raw content for debugging/validation
-    parsedData,
-    summary,
-    mappedAnswers,
-  };
+    // Return ALL data for frontend processing
+    return {
+      message: "DSN file uploaded and parsed successfully",
+      filename: file.originalname,
+      size: file.size,
+      declaration, // Complete structured declaration
+      dsnData, // Raw parsed rows for debugging
+    };
+  } catch (error) {
+    console.error(`DSN parsing failed:`, error);
+    throw new Error(`Failed to parse DSN file: ${error}`);
+  }
 }
