@@ -1,0 +1,255 @@
+@use "../../styles/variables" as *;
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-lg;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+
+  h2 {
+    color: $primary-blue;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-sm;
+  }
+
+  p {
+    color: $gray-text;
+    font-size: $font-size-base;
+    margin: 0;
+  }
+}
+
+// Zone de drop principale
+.dropzone {
+  border: 2px dashed $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-xl;
+  text-align: center;
+  transition: all $transition;
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(.disabled) {
+    border-color: $primary-blue;
+    background-color: rgba($primary-blue, 0.02);
+  }
+
+  &.dragActive {
+    border-color: $primary-blue;
+    background-color: rgba($primary-blue, 0.05);
+    transform: scale(1.01);
+  }
+
+  &.dragReject {
+    border-color: #e74c3c;
+    background-color: rgba(#e74c3c, 0.05);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: $light-bg;
+  }
+}
+
+// Contenu de la zone de drop
+.uploadPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  opacity: 0.7;
+  margin-bottom: $spacing-xs;
+}
+
+.uploadText {
+  font-size: $font-size-lg;
+  color: $gray-dark;
+  font-weight: $font-weight-medium;
+
+  strong {
+    color: $primary-blue;
+  }
+}
+
+.uploadHint {
+  font-size: $font-size-sm;
+  color: $gray-text;
+  margin-top: $spacing-xs;
+}
+
+// Informations du fichier sélectionné
+.fileInfo {
+  background: $light-bg;
+  padding: $spacing-lg;
+  border-radius: $border-radius;
+  border: 2px solid $success-green;
+}
+
+.fileName {
+  font-weight: $font-weight-semibold;
+  color: $gray-dark;
+  margin-bottom: $spacing-xs;
+  word-break: break-all;
+  font-size: $font-size-lg;
+}
+
+.fileSize {
+  color: $gray-text;
+  font-size: $font-size-sm;
+}
+
+// Actions séparées de la dropzone
+.fileActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  margin-top: $spacing-lg;
+
+  @include mobile-only {
+    flex-direction: column;
+  }
+}
+
+.uploadButton {
+  background: $primary-blue;
+  color: $white;
+  border: none;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition;
+  min-width: 160px;
+  font-size: $font-size-base;
+
+  &:hover:not(:disabled) {
+    background: $primary-blue-hover;
+    transform: translateY(-1px);
+    box-shadow: $shadow;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: $gray-light;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.resetButton {
+  background: transparent;
+  color: $gray-text;
+  border: 1px solid $border-color;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition;
+  min-width: 120px;
+  font-size: $font-size-base;
+
+  &:hover:not(:disabled) {
+    background: $light-bg;
+    border-color: $gray-text;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// États de chargement
+.progress {
+  background: $light-bg;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  margin-top: $spacing-lg;
+  text-align: center;
+}
+
+.progressText {
+  color: $primary-blue;
+  font-weight: $font-weight-medium;
+
+  &::after {
+    content: "";
+    animation: dots 1.5s infinite;
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: "";
+  }
+  40% {
+    content: ".";
+  }
+  60% {
+    content: "..";
+  }
+  80%,
+  100% {
+    content: "...";
+  }
+}
+
+// Messages d'erreur
+.error {
+  background: rgba(#e74c3c, 0.1);
+  border: 1px solid rgba(#e74c3c, 0.3);
+  color: #c0392b;
+  padding: $spacing-md;
+  border-radius: $border-radius;
+  margin-top: $spacing-lg;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-weight: $font-weight-medium;
+}
+
+.errorIcon {
+  font-size: $font-size-lg;
+}
+
+// Responsive
+@include mobile-only {
+  .container {
+    margin: $spacing-md;
+    padding: $spacing-md;
+  }
+
+  .dropzone {
+    padding: $spacing-lg;
+    min-height: 160px;
+  }
+
+  .uploadIcon {
+    font-size: 2.5rem;
+  }
+
+  .uploadText {
+    font-size: $font-size-base;
+  }
+}
