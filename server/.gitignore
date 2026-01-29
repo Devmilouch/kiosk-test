@@ -5,3 +5,5 @@ dist/
 coverage/
 npm-debug.log*
 src/test-parsing.ts
+src/test-mapping.ts
+src/test-full-pipeline.ts
