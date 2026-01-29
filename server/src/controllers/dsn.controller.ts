@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { DsnParserService } from "../services/dsnParser.service";
+import { processDsnFile } from "../services/dsn.service";
 
 export const dsnController = {
   async parseDsnFile(req: Request, res: Response, next: NextFunction) {
@@ -7,34 +7,13 @@ export const dsnController = {
       // At this point, the file has already been validated by the middleware
       const file = req.file!; // Non-null assertion as validated by middleware
 
-      // Extract file content
-      const fileContent = file.buffer.toString("utf-8");
+      // Delegate DSN processing to service (synchronous)
+      const processedData = processDsnFile(file);
 
-      console.log(`DSN file received: ${file.originalname} (${file.size} bytes)`);
-
-      // Parse DSN content into structured data
-      const parsedData = DsnParserService.parseDsnContent(fileContent, file.originalname);
-
-      // Extract summary for easier consumption
-      const summary = DsnParserService.extractSummaryStats(parsedData);
-
-      // Response with both structured data and summary
-      const response = {
-        message: "DSN file uploaded and parsed successfully",
-        filename: file.originalname,
-        size: file.size,
-        content: fileContent, // Keep raw content for debugging
-        parsedData,
-        summary,
-      };
-
-      console.log(
-        `DSN parsing completed: ${summary.totalEmployees} employees across ${summary.totalEstablishments} establishments`
-      );
-
-      return res.status(200).json(response);
+      // Return processed DSN data
+      return res.status(200).json(processedData);
     } catch (error) {
-      console.error("Error parsing DSN file:", error);
+      console.error("Error in DSN controller:", error);
       return next(error);
     }
   },

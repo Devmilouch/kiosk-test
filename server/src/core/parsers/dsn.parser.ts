@@ -1,3 +1,14 @@
+/**
+ * DSN Parser - Synchronous implementation for technical test
+ *
+ * NOTE: This synchronous approach is acceptable for the test case (~13K lines).
+ * For production with large DSN files (100K-1M lines), consider:
+ * - Asynchronous processing with setImmediate() yields
+ * - Worker threads for non-blocking parsing
+ * - Streaming approach for memory efficiency
+ * - Background job processing for very large files
+ */
+
 // Precise DSN data structures based on real file analysis
 export interface DsnCompany {
   companyInfo: Record<string, string>;
@@ -86,8 +97,8 @@ export interface ParsedDsnData {
   };
 }
 
-// DSN parsing service - 100% accurate implementation
-export class DsnParserService {
+// DSN parsing - 100% accurate implementation
+export class DsnParser {
   private static readonly DSN_LINE_REGEX = /^([A-Z]\d+\.G\d+\.\d+(?:\.\d+)?),('.*'|'')$/;
 
   /**
