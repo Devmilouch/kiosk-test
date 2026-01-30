@@ -39,7 +39,7 @@ function App() {
         </div>
       </header>
       <main className={styles.contentArea}>{renderCurrentScreen()}</main>
-      
+
       {/* Toast notifications container */}
       <ToastContainer
         position="top-center"

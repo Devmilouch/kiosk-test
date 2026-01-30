@@ -103,30 +103,30 @@ export const WordExport = () => {
         new Paragraph({
           children: [
             new TextRun({ text: "• Total employés : ", bold: true }),
-            new TextRun({ text: totalEmployees.toString() })
+            new TextRun({ text: totalEmployees.toString() }),
           ],
-          spacing: { after: 200 }
+          spacing: { after: 200 },
         }),
         new Paragraph({
           children: [
             new TextRun({ text: "• Employés hommes : ", bold: true }),
-            new TextRun({ text: genderCounts.homme.toString() })
+            new TextRun({ text: genderCounts.homme.toString() }),
           ],
-          spacing: { after: 200 }
+          spacing: { after: 200 },
         }),
         new Paragraph({
           children: [
             new TextRun({ text: "• Employés femmes : ", bold: true }),
-            new TextRun({ text: genderCounts.femme.toString() })
+            new TextRun({ text: genderCounts.femme.toString() }),
           ],
-          spacing: { after: 200 }
+          spacing: { after: 200 },
         }),
         new Paragraph({
           children: [
             new TextRun({ text: "• Total rémunérations : ", bold: true }),
-            new TextRun({ text: `${totalRemuneration.toLocaleString()} €` })
+            new TextRun({ text: `${totalRemuneration.toLocaleString()} €` }),
           ],
-          spacing: { after: 400 }
+          spacing: { after: 400 },
         })
       );
 

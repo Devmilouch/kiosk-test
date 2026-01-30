@@ -118,7 +118,7 @@ interface DsnUploadState {
   setError: (error: string | null) => void;
   clearError: () => void;
   reset: () => void;
-  
+
   // User answers management
   setUserAnswer: (questionId: string, value: string | number) => void;
   getUserAnswer: (questionId: string) => string | number | undefined;
@@ -172,19 +172,19 @@ export const useDsnUploadStore = create<DsnUploadState>((set, get) => ({
       error: null,
       userAnswers: {},
     }),
-    
+
   // User answers management
   setUserAnswer: (questionId, value) => {
     set(state => ({
-      userAnswers: { ...state.userAnswers, [questionId]: value }
+      userAnswers: { ...state.userAnswers, [questionId]: value },
     }));
   },
-  
-  getUserAnswer: (questionId) => {
+
+  getUserAnswer: questionId => {
     const { userAnswers } = get();
     return userAnswers[questionId];
   },
-  
+
   clearUserAnswers: () => {
     set({ userAnswers: {} });
   },
@@ -207,16 +207,16 @@ export const useDsnUploadStore = create<DsnUploadState>((set, get) => ({
     const individus = parsedDsnData.declaration.entreprise.etablissement.individus;
     const counts = individus.reduce(
       (acc, individu) => {
-        if (individu.sexe === '01') {
+        if (individu.sexe === "01") {
           acc.homme += 1;
-        } else if (individu.sexe === '02') {
+        } else if (individu.sexe === "02") {
           acc.femme += 1;
         }
         return acc;
       },
       { homme: 0, femme: 0 }
     );
-    
+
     return counts;
   },
 
@@ -228,14 +228,14 @@ export const useDsnUploadStore = create<DsnUploadState>((set, get) => ({
 
     const individus = parsedDsnData.declaration.entreprise.etablissement.individus;
     const contractCounts: Record<string, number> = {};
-    
+
     individus.forEach(individu => {
       individu.contrats.forEach(contrat => {
-        const contractType = contrat.nature || 'non-spécifié';
+        const contractType = contrat.nature || "non-spécifié";
         contractCounts[contractType] = (contractCounts[contractType] || 0) + 1;
       });
     });
-    
+
     return contractCounts;
   },
 
@@ -247,18 +247,18 @@ export const useDsnUploadStore = create<DsnUploadState>((set, get) => ({
 
     const individus = parsedDsnData.declaration.entreprise.etablissement.individus;
     let total = 0;
-    
+
     individus.forEach(individu => {
       individu.versements.forEach(versement => {
         versement.remunerations.forEach(remuneration => {
-          const montant = parseFloat(remuneration.montant || '0');
+          const montant = parseFloat(remuneration.montant || "0");
           if (!isNaN(montant)) {
             total += montant;
           }
         });
       });
     });
-    
+
     return total;
   },
 }));

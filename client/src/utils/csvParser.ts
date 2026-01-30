@@ -19,23 +19,26 @@ export interface FormQuestion extends CSVQuestion {
 }
 
 export const parseCSVQuestions = (csvText: string): FormQuestion[] => {
-  const lines = csvText.trim().split('\n');
-  
+  const lines = csvText.trim().split("\n");
+
   // Parse CSV rows
-  const questions: CSVQuestion[] = lines.slice(1).map(line => {
-    const values = line.split(';');
-    return {
-      id: values[0] || "",
-      questionLabelEn: values[1] || "",
-      questionLabelFr: values[2] || "",
-      content: (values[3] || "") as CSVQuestion['content'],
-      relatedQuestionId: values[4] || "",
-      order: parseInt(values[5]) || 0,
-      unit: values[6] || "",
-      enumEn: values[7] || "",
-      enumFr: values[8] || "",
-    };
-  }).filter(q => q.id); // Filter out empty rows
+  const questions: CSVQuestion[] = lines
+    .slice(1)
+    .map(line => {
+      const values = line.split(";");
+      return {
+        id: values[0] || "",
+        questionLabelEn: values[1] || "",
+        questionLabelFr: values[2] || "",
+        content: (values[3] || "") as CSVQuestion["content"],
+        relatedQuestionId: values[4] || "",
+        order: parseInt(values[5]) || 0,
+        unit: values[6] || "",
+        enumEn: values[7] || "",
+        enumFr: values[8] || "",
+      };
+    })
+    .filter(q => q.id); // Filter out empty rows
 
   // Build hierarchical structure
   const questionMap = new Map<string, FormQuestion>();
@@ -46,7 +49,7 @@ export const parseCSVQuestions = (csvText: string): FormQuestion[] => {
     const formQuestion: FormQuestion = {
       ...q,
       children: [],
-      level: 0
+      level: 0,
     };
     questionMap.set(q.id, formQuestion);
   });
@@ -54,7 +57,7 @@ export const parseCSVQuestions = (csvText: string): FormQuestion[] => {
   // Second pass: build hierarchy
   questions.forEach(q => {
     const formQuestion = questionMap.get(q.id)!;
-    
+
     if (q.relatedQuestionId) {
       // This is a child question
       const parent = questionMap.get(q.relatedQuestionId);
