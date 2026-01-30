@@ -43,10 +43,10 @@ export const DsnForm = () => {
       case "S1-6_03":
         return totalEmployees;
 
-      case "K_718": // Hommes
+      case "K_718": // Hommes (total sans distinction de contrat)
         return genderCounts.homme;
 
-      case "K_719": // Femmes
+      case "K_719": // Femmes (total sans distinction de contrat)
         return genderCounts.femme;
 
       // Supprimer les valeurs en dur - ne pas remplir si on ne peut pas calculer
@@ -87,6 +87,7 @@ export const DsnForm = () => {
         );
 
       case "text":
+      case "Text":
         return (
           <textarea
             value={currentAnswer}
@@ -115,6 +116,7 @@ export const DsnForm = () => {
       }
 
       case "table":
+      case "Table":
         return <div className={styles.tableContainer}>📋 Table: {question.questionLabelFr}</div>;
 
       default: // Empty content - just a title/section
@@ -123,7 +125,7 @@ export const DsnForm = () => {
   };
 
   const renderQuestion = (question: FormQuestion): React.JSX.Element => {
-    const isTable = question.content === "table";
+    const isTable = question.content === "table" || question.content === "Table";
     const hasChildren = question.children.length > 0;
     const isTitle = question.content === "";
 

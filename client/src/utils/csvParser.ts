@@ -3,7 +3,7 @@ export interface CSVQuestion {
   id: string;
   questionLabelEn: string;
   questionLabelFr: string;
-  content: "number" | "text" | "enum" | "table" | "";
+  content: "number" | "text" | "enum" | "table" | "Table" | "Text" | "";
   relatedQuestionId: string;
   order: number;
   unit: string;
