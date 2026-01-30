@@ -257,7 +257,7 @@ export const DsnForm = () => {
         </button>
       </div>
 
-      <div className={styles.debugSection}>
+      {/* <div className={styles.debugSection}>
         <details>
           <summary>
             <strong>🔍 Structure des questions (debug)</strong>
@@ -281,7 +281,7 @@ export const DsnForm = () => {
             )}
           </pre>
         </details>
-      </div>
+      </div> */}
     </div>
   );
 };
