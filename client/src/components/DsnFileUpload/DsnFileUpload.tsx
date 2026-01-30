@@ -1,4 +1,5 @@
 import { useDropzone } from "react-dropzone";
+import { useEffect } from "react";
 import type { FileRejection } from "react-dropzone";
 import { z } from "zod";
 import axios from "axios";
@@ -32,6 +33,11 @@ export const DsnFileUpload = () => {
     setError,
   } = useDsnUploadStore();
   const { setScreen } = useAppNavigationStore();
+
+  // Clean up any previously loaded file on component mount
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const onDrop = (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     clearError();
