@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Types pour les éléments DSN spécifiques
+// Types for specific DSN elements
 interface DsnError {
   code?: string;
   message?: string;
@@ -29,7 +29,7 @@ interface DsnRow {
   [key: string]: string | undefined;
 }
 
-// Types pour la structure DSN complète retournée par l'API
+// Types for complete DSN structure returned by API
 interface DsnDeclaration {
   nature: string;
   type: string;
@@ -51,7 +51,7 @@ interface DsnIndividu {
   nomFamille: string;
   nomUsage?: string;
   prenoms: string;
-  sexe: string; // '01' pour homme, '02' pour femme
+  sexe: string; // '01' for male, '02' for female
   identifiantTechnique: string;
   contrats: DsnContrat[];
   versements: DsnVersement[];
@@ -89,7 +89,7 @@ interface DsnFile {
   content?: string;
 }
 
-// Structure complète retournée par l'API
+// Complete structure returned by API
 export interface ProcessedDsnData {
   message: string;
   filename: string;
@@ -105,15 +105,15 @@ interface DsnUploadState {
   // State
   selectedFile: File | null;
   uploadedFile: DsnFile | null;
-  parsedDsnData: ProcessedDsnData | null; // Nouvelles données DSN complètes
+  parsedDsnData: ProcessedDsnData | null; // New complete DSN data
   isUploading: boolean;
   error: string | null;
-  userAnswers: Record<string, string | number>; // Réponses saisies par l'utilisateur
+  userAnswers: Record<string, string | number>; // User provided answers
 
   // Actions
   setSelectedFile: (file: File | null) => void;
   setUploadedFile: (file: DsnFile | null) => void;
-  setParsedDsnData: (data: ProcessedDsnData | null) => void; // Nouvelle action
+  setParsedDsnData: (data: ProcessedDsnData | null) => void; // New action
   setUploading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;

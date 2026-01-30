@@ -101,7 +101,7 @@ export const DsnFileUpload = () => {
       );
 
       console.log("Upload successful:", response.data);
-      console.log("Individus trouvés:", response.data.declaration?.entreprise?.etablissement?.individus?.length || 0);
+      console.log("Individuals found:", response.data.declaration?.entreprise?.etablissement?.individus?.length || 0);
 
       // Show success toast
       toast.success("Fichier DSN téléchargé et analysé avec succès !");

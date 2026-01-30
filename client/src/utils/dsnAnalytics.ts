@@ -1,6 +1,6 @@
 import type { ProcessedDsnData } from "../stores/dsnUpload.store";
 
-// Utilitaires pour extraire plus d'informations réelles depuis les données DSN
+// Utilities to extract more real information from DSN data
 export const getDsnAnalytics = (parsedDsnData: ProcessedDsnData | null) => {
   if (!parsedDsnData?.declaration?.entreprise?.etablissement?.individus) {
     return {
@@ -33,7 +33,7 @@ export const getDsnAnalytics = (parsedDsnData: ProcessedDsnData | null) => {
     });
   });
 
-  // Analyse des rémunérations
+  // Remuneration analysis
   let totalRemuneration = 0;
   let hasRemunerationData = false;
   
@@ -49,7 +49,7 @@ export const getDsnAnalytics = (parsedDsnData: ProcessedDsnData | null) => {
     });
   });
 
-  // Répartition par genre
+  // Gender distribution
   const genderBreakdown = individus.reduce(
     (acc, individu) => {
       if (individu.sexe === '01') {
@@ -82,7 +82,7 @@ export const getDsnAnalytics = (parsedDsnData: ProcessedDsnData | null) => {
   };
 };
 
-// Détermine quelles questions peuvent être calculées avec les données disponibles
+// Determines which questions can be calculated with available data
 export const getCalculableQuestions = (parsedDsnData: ProcessedDsnData | null): string[] => {
   const analytics = getDsnAnalytics(parsedDsnData);
   
@@ -92,14 +92,14 @@ export const getCalculableQuestions = (parsedDsnData: ProcessedDsnData | null): 
 
   const calculable: string[] = [];
 
-  // Questions toujours calculables si on a des individus
+  // Questions always calculable if we have individuals
   if (analytics.totalEmployees > 0) {
-    calculable.push("S1-6_02", "S1-6_03"); // Nombre d'employés
+    calculable.push("S1-6_02", "S1-6_03"); // Employee count
   }
 
-  // Questions calculables si on a des données de genre
+  // Questions calculable if we have gender data
   if (analytics.genderBreakdown.homme > 0 || analytics.genderBreakdown.femme > 0) {
-    calculable.push("K_718", "K_719"); // Répartition par genre
+    calculable.push("K_718", "K_719"); // Gender distribution
   }
 
   return calculable;

@@ -4,8 +4,8 @@ export interface ProcessedDsnFile {
   message: string;
   filename: string;
   size: number;
-  declaration: any; // Toutes les données structurées du DSN
-  dsnData: DSNData; // Données brutes parsées
+  declaration: any; // All structured DSN data
+  dsnData: DSNData; // Raw parsed data
 }
 
 /**

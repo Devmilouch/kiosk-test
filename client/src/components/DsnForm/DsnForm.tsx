@@ -214,7 +214,7 @@ export const DsnForm = () => {
       },
     };
 
-    console.log("Données d'export:", exportData);
+    console.log("Export data:", exportData);
     navigateToExport();
   };
 

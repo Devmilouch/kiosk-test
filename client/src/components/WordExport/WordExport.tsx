@@ -255,7 +255,7 @@ export const WordExport = () => {
 
       saveAs(blob, fileName);
     } catch (error) {
-      console.error("Erreur lors de la génération du document Word:", error);
+      console.error("Error generating Word document:", error);
       alert("Erreur lors de la génération du document Word. Veuillez réessayer.");
     } finally {
       setIsExporting(false);

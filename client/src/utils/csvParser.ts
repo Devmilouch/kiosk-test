@@ -1,4 +1,4 @@
-// Parser pour les questions CSV selon la structure définie dans le README
+// CSV questions parser according to README structure
 export interface CSVQuestion {
   id: string;
   questionLabelEn: string;
@@ -11,7 +11,7 @@ export interface CSVQuestion {
   enumFr: string;
 }
 
-// Structure hiérarchique pour le rendu
+// Hierarchical structure for rendering
 export interface FormQuestion extends CSVQuestion {
   children: FormQuestion[];
   level: number;
