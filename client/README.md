@@ -1,64 +1,105 @@
-# React + TypeScript + Vite
+# Client - Application React TypeScript
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Vue d'ensemble
 
-Currently, two official plugins are available:
+Interface utilisateur moderne pour le traitement des fichiers DSN avec génération automatique de formulaires CSRD et export Word professionnel.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Stack Technique
 
-## React Compiler
+- **Framework :** React 19.2 (dernière version stable)
+- **Langage :** TypeScript strict
+- **Build :** Vite 7.2 (HMR ultra-rapide)
+- **État Global :** Zustand (store léger)
+- **Validation :** Zod + @hookform/resolvers
+- **Styling :** SCSS Modules (CSS isolé)
+- **Notifications :** React Toastify
+- **Export :** docx + file-saver
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Architecture
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── main.tsx              # Point d'entrée + configuration React
+├── App.tsx               # Routeur principal + navigation
+├── components/           # Composants UI réutilisables
+│   ├── DsnFileUpload/   # Upload + validation fichiers DSN
+│   ├── DsnForm/         # Formulaire dynamique hiérarchique  
+│   └── WordExport/      # Génération documents Word
+├── stores/              # État global Zustand
+├── utils/               # Utilitaires métier
+│   ├── csvParser.ts     # Parsing CSV questions CSRD
+│   └── dsnAnalytics.ts  # Calculs automatiques DSN
+├── styles/              # Styles globaux SCSS
+└── assets/              # Ressources statiques
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Installation & Lancement
+
+### Prérequis
+- Node.js 18+ (modules ES6)
+- npm/pnpm/yarn
+
+### Installation
+```bash
+npm install
+```
+
+### Développement
+```bash
+npm run dev          # Serveur de développement (HMR)
+# Ouvre automatiquement http://localhost:5173
+```
+
+### Production
+```bash
+npm run build        # Build optimisé
+npm run preview      # Aperçu du build local
+```
+
+### Qualité Code
+```bash
+npm run lint         # ESLint + TypeScript strict
+```
+
+## Fonctionnalités
+
+### 🔄 Upload DSN
+- **Drag & Drop :** Interface intuitive react-dropzone
+- **Validation :** Type fichier (.txt), taille (10MB max)
+- **Feedback :** Toasts temps réel + états de chargement
+
+### 📋 Formulaire Dynamique
+- **Structure hiérarchique :** Questions parent/enfant illimitées
+- **Types multiples :** Number, text, enum, tables
+- **Validation temps réel :** Champs requis avec feedback
+- **Auto-complétion :** Calculs automatiques depuis DSN
+
+### 📄 Export Word
+- **Format professionnel :** Structure document complète
+- **Données complètes :** Questions + réponses + métadonnées
+- **Téléchargement direct :** Génération côté client
+
+## Configuration
+
+### Variables d'environnement
+Créer `.env` (optionnel) :
+```bash
+VITE_API_BASE_URL=http://localhost:8080  # URL API backend
+```
+
+### ESLint & TypeScript
+Configuration stricte incluse avec Vite :
 
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
 export default defineConfig([
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
-      // Other configs...
-      // Enable lint rules for React
+      // TypeScript strict rules
+      tseslint.configs.recommendedTypeChecked,
+      // React-specific lint rules
       reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
       reactDom.configs.recommended,
     ],
     languageOptions: {
@@ -66,8 +107,61 @@ export default defineConfig([
         project: ['./tsconfig.node.json', './tsconfig.app.json'],
         tsconfigRootDir: import.meta.dirname,
       },
-      // other options...
     },
   },
 ])
 ```
+
+## Architecture Technique
+
+### État Global (Zustand)
+```typescript
+// Store principal DSN
+interface DsnUploadState {
+  selectedFile: File | null
+  parsedDsnData: ProcessedDsnData | null  
+  userAnswers: Record<string, string>
+  // ... calculs automatiques
+}
+```
+
+### Composants Modulaires
+- **Séparation responsabilités :** Un composant = une fonction
+- **Props typées :** Interfaces TypeScript strictes
+- **Styles isolés :** SCSS Modules (pas de conflits CSS)
+
+### Performance
+- **Code splitting :** Lazy loading préparé
+- **Memoization :** Re-renders optimisés  
+- **Bundle optimisé :** Tree-shaking Vite
+
+## Points d'Extension
+
+### Nouveaux Types Questions
+Étendre `utils/csvParser.ts`
+
+### Nouvelles Validations  
+Ajouter schémas Zod
+
+### Export Supplémentaires
+Intégrer nouvelles librairies (PDF, Excel)
+
+### Authentification
+Store Zustand ready pour auth
+
+## Développement avec Vite
+
+### Hot Module Replacement (HMR)
+- Rechargement instantané des composants
+- Préservation de l'état React
+- Erreurs TypeScript temps réel
+
+### Build Optimisé
+- Minification automatique
+- Tree-shaking intelligent  
+- Chunks optimaux
+
+### Outils Développeur
+- React DevTools supportés
+- Source maps développement
+- TypeScript IntelliSense
