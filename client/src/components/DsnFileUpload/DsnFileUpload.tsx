@@ -28,6 +28,7 @@ export const DsnFileUpload = () => {
     reset,
     setUploading,
     setUploadedFile,
+    setParsedDsnData,
     setError,
   } = useDsnUploadStore();
   const { setScreen } = useAppNavigationStore();
@@ -94,16 +95,20 @@ export const DsnFileUpload = () => {
       );
 
       console.log("Upload successful:", response.data);
+      console.log("Individus trouvés:", response.data.declaration?.entreprise?.etablissement?.individus?.length || 0);
 
       // Show success toast
       toast.success("Fichier DSN téléchargé et analysé avec succès !");
 
-      // Store the result in the store for next screens
+      // Store the basic file info
       setUploadedFile({
         name: response.data.filename,
         size: response.data.size,
         content: response.data.content,
       });
+
+      // Store the complete parsed DSN data for calculations
+      setParsedDsnData(response.data);
 
       setScreen("form");
     } catch (error) {

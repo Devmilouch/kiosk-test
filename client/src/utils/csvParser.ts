@@ -1,0 +1,105 @@
+// Parser pour les questions CSV selon la structure définie dans le README
+export interface CSVQuestion {
+  id: string;
+  questionLabelEn: string;
+  questionLabelFr: string;
+  content: "number" | "text" | "enum" | "table" | "";
+  relatedQuestionId: string;
+  order: number;
+  unit: string;
+  enumEn: string;
+  enumFr: string;
+}
+
+// Structure hiérarchique pour le rendu
+export interface FormQuestion extends CSVQuestion {
+  children: FormQuestion[];
+  level: number;
+  // Removed parent property to avoid circular references
+}
+
+export const parseCSVQuestions = (csvText: string): FormQuestion[] => {
+  const lines = csvText.trim().split('\n');
+  
+  // Parse CSV rows
+  const questions: CSVQuestion[] = lines.slice(1).map(line => {
+    const values = line.split(';');
+    return {
+      id: values[0] || "",
+      questionLabelEn: values[1] || "",
+      questionLabelFr: values[2] || "",
+      content: (values[3] || "") as CSVQuestion['content'],
+      relatedQuestionId: values[4] || "",
+      order: parseInt(values[5]) || 0,
+      unit: values[6] || "",
+      enumEn: values[7] || "",
+      enumFr: values[8] || "",
+    };
+  }).filter(q => q.id); // Filter out empty rows
+
+  // Build hierarchical structure
+  const questionMap = new Map<string, FormQuestion>();
+  const rootQuestions: FormQuestion[] = [];
+
+  // First pass: create all questions
+  questions.forEach(q => {
+    const formQuestion: FormQuestion = {
+      ...q,
+      children: [],
+      level: 0
+    };
+    questionMap.set(q.id, formQuestion);
+  });
+
+  // Second pass: build hierarchy
+  questions.forEach(q => {
+    const formQuestion = questionMap.get(q.id)!;
+    
+    if (q.relatedQuestionId) {
+      // This is a child question
+      const parent = questionMap.get(q.relatedQuestionId);
+      if (parent) {
+        formQuestion.level = parent.level + 1;
+        parent.children.push(formQuestion);
+        // Sort children by order
+        parent.children.sort((a, b) => a.order - b.order);
+      } else {
+        // Parent not found, treat as root
+        rootQuestions.push(formQuestion);
+      }
+    } else {
+      // Root question
+      rootQuestions.push(formQuestion);
+    }
+  });
+
+  // Sort root questions by order
+  rootQuestions.sort((a, b) => a.order - b.order);
+
+  return rootQuestions;
+};
+
+// Questions CSV du case study
+export const QUESTIONS_CSV = `ID;question label en;question label fr;content;relatedQuestion ID;order;unit;enum en;enum fr;;;;;;;;;;;;;
+S1-6_01;Global employees;Employés globaux;Table;;0;;;;;;;;;;;;;;;;
+S1-6_02;Number of employees (end of period);Nombre d'employés (fin de période);number;S1-6_01;0;;;;;;;;;;;;;;;;
+S1-6_03;Number of employees (average during period);Nombre d'employés (moyenne sur la période);number;S1-6_01;1;;;;;;;;;;;;;;;;
+S1-6_11;Number of employee who have left the company;Nombre d'employés ayant quitté l'entreprise;number;S1-6_01;2;;;;;;;;;;;;;;;;
+S1-6_12;Percentage of employee turnover;Turnover;number;S1-6_01;3;%;;;;;;;;;;;;;;;
+S1-6_04;Employees by country of significant employment;Employés par pays d'emploi significatif;Table;;1;;;;;;;;;;;;;;;;
+S1-6_05;Number of employees (end of period);Nombre d'employés (fin de période);number;S1-6_04;0;;;;;;;;;;;;;;;;
+S1-6_06;Number of employees (average during period);Nombre d'employés (moyenne sur la période);number;S1-6_04;1;;;;;;;;;;;;;;;;
+S1-6_07;Employees by contract and gender;Employés par contrat et genre;Table;;2;;;;;;;;;;;;;;;;
+K_718;Number of employees (end of period);Nombre d'employés (fin de période);number;S1-6_07;0;;;;;;;;;;;;;;;;
+K_719;Number of employees (average during period);Nombre d'employés (moyenne sur la période);number;S1-6_07;1;;;;;;;;;;;;;;;;
+S1-6_08;Employees by region;Employés par région;Table;;3;;;;;;;;;;;;;;;;
+S1-6_09;Number of employees (end of period);Nombre d'employés (fin de période);number;S1-6_08;0;;;;;;;;;;;;;;;;
+S1-6_10;Number of employees (average during period);Nombre d'employés (moyenne sur la période);number;S1-6_08;1;;;;;;;;;;;;;;;;
+S1-6_18;Employees by category;Employés par catégorie;Table;;4;;;;;;;;;;;;;;;;
+S1-6_19;Number of employees (end of period);Nombre d'employés (fin de période);number;S1-6_18;0;;;;;;;;;;;;;;;;
+S1-6_20;Number of employees (average during period);Nombre d'employés (moyenne sur la période);number;S1-6_18;1;;;;;;;;;;;;;;;;
+S1-6_13;Methodologies and context;Méthodologies et mise en contexte;;;5;;;;;;;;;;;;;;;;
+S1-6_14;Is the data provided in terms of number of people or full-time equivalents?;Les données sont-elles fournies en nombre de personnes ou en equivalent temps plein ? ;enum;S1-6_13;0;;Head-count, Full-time equivalent;Effectifs, Équivalent temps plein;;;;;;;;;;;;;
+S1-6_15;Is the data provided at the end of the period, averaged over the period, or otherwise?;Les données sont-elles fournies à la fin de la période, en moyennant sur la période, ou autrement ?;enum;S1-6_13;1;;At end of period, During period, Other;A la fin de la période, Moyenne sur la période, Autre;;;;;;;;;;;;;
+S1-6_16;What contextual information is needed to understand the data?;Quelles sont les informations contextuelles nécessaires pour comprendre les données ?;Text;S1-6_13;2;;;;;;;;;;;;;;;;
+S1-6_17;What is the relationship between the total number of employees indicated and the number given in the financial statements?;Quelle est la référence entre le nombre total d'employé indiqué et celui renseigné dans les états financiers ?;Text;S1-6_13;3;;;;;;;;;;;;;;;;`;

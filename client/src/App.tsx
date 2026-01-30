@@ -1,5 +1,7 @@
 import { useAppNavigationStore } from "./stores/appNavigation.store";
 import { DsnFileUpload } from "./components/DsnFileUpload/DsnFileUpload";
+import { DsnForm } from "./components/DsnForm/DsnForm";
+import { WordExport } from "./components/WordExport/WordExport";
 import { ToastContainer } from "react-toastify";
 import logoKiosk from "./assets/kiosk_logo.jpeg";
 import styles from "./styles/App.module.scss";
@@ -14,9 +16,9 @@ function App() {
       case "upload":
         return <DsnFileUpload />;
       case "form":
-        return <div>TODO: Composant de formulaire DSN</div>;
+        return <DsnForm />;
       case "export":
-        return <div>TODO: Composant d'export Word</div>;
+        return <WordExport />;
       default:
         console.warn(`Unknown screen: ${currentScreen}, fallback to upload`);
         return <DsnFileUpload />;
