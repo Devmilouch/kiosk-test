@@ -77,10 +77,18 @@ export const DsnForm = () => {
         return (
           <div className={styles.fieldContainer}>
             <input
-              type="number"
+              type="text"
               value={currentAnswer}
-              onChange={e => updateAnswer(question.id, parseFloat(e.target.value) || 0)}
+              onChange={e => {
+                const value = e.target.value;
+                // Allow empty string or numbers (including decimals)
+                if (value === "" || /^\d*\.?\d*$/.test(value)) {
+                  updateAnswer(question.id, value === "" ? "" : parseFloat(value) || 0);
+                }
+              }}
               className={styles.numberInput}
+              inputMode="numeric"
+              pattern="[0-9]*\.?[0-9]*"
             />
             {question.unit && <span className={styles.unit}>{question.unit}</span>}
           </div>

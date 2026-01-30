@@ -98,45 +98,37 @@ export const WordExport = () => {
         })
       );
 
-      // Summary table
-      const summaryTable = new Table({
-        rows: [
-          new TableRow({
-            children: [
-              new TableCell({ children: [new Paragraph("Indicateur")] }),
-              new TableCell({ children: [new Paragraph("Valeur")] }),
-            ],
-          }),
-          new TableRow({
-            children: [
-              new TableCell({ children: [new Paragraph("Total employés")] }),
-              new TableCell({ children: [new Paragraph(totalEmployees.toString())] }),
-            ],
-          }),
-          new TableRow({
-            children: [
-              new TableCell({ children: [new Paragraph("Employés hommes")] }),
-              new TableCell({ children: [new Paragraph(genderCounts.homme.toString())] }),
-            ],
-          }),
-          new TableRow({
-            children: [
-              new TableCell({ children: [new Paragraph("Employés femmes")] }),
-              new TableCell({ children: [new Paragraph(genderCounts.femme.toString())] }),
-            ],
-          }),
-          new TableRow({
-            children: [
-              new TableCell({ children: [new Paragraph("Total rémunérations")] }),
-              new TableCell({
-                children: [new Paragraph(`${totalRemuneration.toLocaleString()} €`)],
-              }),
-            ],
-          }),
-        ],
-      });
-
-      documentChildren.push(summaryTable);
+      // Summary as formatted paragraphs instead of table
+      documentChildren.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: "• Total employés : ", bold: true }),
+            new TextRun({ text: totalEmployees.toString() })
+          ],
+          spacing: { after: 200 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({ text: "• Employés hommes : ", bold: true }),
+            new TextRun({ text: genderCounts.homme.toString() })
+          ],
+          spacing: { after: 200 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({ text: "• Employés femmes : ", bold: true }),
+            new TextRun({ text: genderCounts.femme.toString() })
+          ],
+          spacing: { after: 200 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({ text: "• Total rémunérations : ", bold: true }),
+            new TextRun({ text: `${totalRemuneration.toLocaleString()} €` })
+          ],
+          spacing: { after: 400 }
+        })
+      );
 
       // Questions and answers section
       documentChildren.push(
